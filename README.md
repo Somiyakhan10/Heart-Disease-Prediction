@@ -1,12 +1,42 @@
 # ❤️ CardioSense — AI-Powered Cardiovascular Risk Prediction System
 
-An Interpretable Machine Learning System for Heart Disease Risk Assessment with Multi-Model Comparison and Clinical Decision Support
+**An Interpretable Machine Learning System for Heart Disease Risk Assessment with Multi-Model Comparison and Clinical Decision Support**
+
+---
+
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-orange)
+![Flask](https://img.shields.io/badge/Flask-3.1-black)
+![React](https://img.shields.io/badge/React-19-61dafb)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8)
+![MIT License](https://img.shields.io/badge/License-MIT-green)
+
+</div>
 
 ---
 
 > ⚠️ **Medical Disclaimer:** CardioSense is developed strictly for research and educational purposes. It is NOT a certified medical device and must not be used as the sole basis for any clinical decision. All predictions should be reviewed and validated by a qualified healthcare professional.
 
 ---
+
+## 📌 Table of Contents
+
+- [Overview](#-overview)
+- [Screenshots](#-screenshots)
+- [System Architecture](#-system-architecture)
+- [Dataset](#-dataset)
+- [Models & Performance](#-models--performance)
+- [Feature Engineering](#-feature-engineering)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+- [API Reference](#-api-reference)
+- [Technology Stack](#-technology-stack)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [Citation](#-citation)
+- [License](#-license)
 
 ---
 
@@ -16,15 +46,35 @@ An Interpretable Machine Learning System for Heart Disease Risk Assessment with 
 
 ### Key Features:
 
-- **Multi-Model Comparison** — Compare Random Forest, Gradient Boosting, and Logistic Regression side-by-side
-- **Clinical Input Interface** — 14 patient parameters organised by clinical categories
-- **Real-Time Risk Assessment** — Instant predictions with confidence scores
-- **Batch Prediction** — Upload CSV files for bulk patient risk assessment
-- **Interpretable Outputs** — Probability scores, risk categories, and feature importance
-- **Responsive Design** — Works on desktops, tablets, and mobile devices
-
+| Feature | Description |
+|---------|-------------|
+| **Multi-Model Comparison** | Compare Random Forest, Gradient Boosting, and Logistic Regression side-by-side |
+| **Clinical Input Interface** | 14 patient parameters organised by clinical categories |
+| **Real-Time Risk Assessment** | Instant predictions with confidence scores |
+| **Batch Prediction** | Upload CSV files for bulk patient risk assessment |
+| **Interpretable Outputs** | Probability scores, risk categories, and feature importance |
+| **Responsive Design** | Works on desktops, tablets, and mobile devices |
 
 ---
+
+## 📸 Screenshots
+
+### Home Dashboard
+*Model comparison cards, quick stats, and clinical workflow overview*
+
+<img width="1887" height="886" alt="image" src="https://github.com/user-attachments/assets/82d21777-f973-4497-a78f-9b16546bf2d2" />
+
+### Batch Prediction
+*CSV upload interface for bulk patient risk assessment*
+
+<img width="1894" height="891" alt="image" src="https://github.com/user-attachments/assets/30e6fe5e-e438-41c7-ba56-960ae3d087f3" />
+
+
+### About Page
+*Methodology, dataset information, and model documentation*
+
+<img width="1884" height="802" alt="image" src="https://github.com/user-attachments/assets/877612e6-b472-4157-8163-82534cf124d0" />
+
 
 ---
 
@@ -286,6 +336,121 @@ Run all cells to regenerate model files.
 
 ---
 
+## 📡 API Reference
+
+**Base URL (local):** `http://127.0.0.1:5000`
+
+### GET `/api/health`
+
+Returns API status and available models.
+
+**Response 200:**
+```json
+{
+  "status": "healthy",
+  "models": ["random_forest", "gradient_boosting", "logistic_regression"],
+  "features": 13
+}
+```
+
+### POST `/api/predict`
+
+Accepts patient parameters and returns predictions from all three models.
+
+**Request Body:**
+```json
+{
+  "features": {
+    "age": 52,
+    "sex": 1,
+    "cp": 0,
+    "trestbps": 125,
+    "chol": 212,
+    "fbs": 0,
+    "restecg": 1,
+    "thalach": 168,
+    "exang": 0,
+    "oldpeak": 1.0,
+    "slope": 2,
+    "ca": 2,
+    "thal": 3
+  }
+}
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "predictions": {
+    "random_forest": {
+      "prediction": 1,
+      "label": "Disease Present",
+      "confidence": 83.6,
+      "probability": 0.836
+    },
+    "gradient_boosting": {
+      "prediction": 1,
+      "label": "Disease Present",
+      "confidence": 78.2,
+      "probability": 0.782
+    },
+    "logistic_regression": {
+      "prediction": 0,
+      "label": "No Disease",
+      "confidence": 65.4,
+      "probability": 0.346
+    }
+  },
+  "ensemble_consensus": "2 out of 3 models predict Disease Present"
+}
+```
+
+### POST `/api/batch-predict`
+
+Upload CSV file for bulk predictions.
+
+**Request:** `multipart/form-data` with field `file`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "total_patients": 50,
+  "results": [
+    {
+      "patient_id": 1,
+      "random_forest": "Disease Present",
+      "gradient_boosting": "Disease Present",
+      "logistic_regression": "No Disease",
+      "consensus": "2/3"
+    }
+  ]
+}
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Version | Purpose |
+|-------|------------|---------|---------|
+| **Model** | scikit-learn | 1.6.1 | ML algorithms (RF, GB, LR) |
+| **Model** | pandas | 2.2.2 | Data manipulation |
+| **Model** | numpy | 2.0.2 | Numerical operations |
+| **Backend** | Flask | 3.1.0 | REST API server |
+| **Backend** | Flask-CORS | 4.0.1 | Cross-origin resource sharing |
+| **Backend** | Gunicorn | 22.0.0 | Production WSGI server |
+| **Frontend** | React | 19.0 | UI framework |
+| **Frontend** | Tailwind CSS | 4.0 | Utility-first styling |
+| **Frontend** | Recharts | latest | Charts & visualizations |
+| **Frontend** | Axios | latest | HTTP client |
+| **Deployment** | Docker | latest | Containerization |
+| **Deployment** | Hugging Face Spaces | — | Backend hosting |
+| **Deployment** | Vercel | — | Frontend hosting |
+| **Training** | Jupyter | latest | EDA & model development |
+
+---
 
 ## 🗺️ Roadmap
 
@@ -295,7 +460,7 @@ Run all cells to regenerate model files.
 - [x] **Phase 4** — Flask REST API development
 - [x] **Phase 5** — React dashboard with Tailwind CSS
 - [x] **Phase 6** — Batch prediction for CSV uploads
-- [x] **Phase 7** — Docker deployment on Render + Vercel
+- [x] **Phase 7** — Docker deployment on Hugging Face Spaces
 - [ ] **Phase 8** — SHAP/LIME explainability integration
 - [ ] **Phase 9** — XGBoost and Neural Network model addition
 - [ ] **Phase 10** — Mobile app (React Native) development
@@ -326,14 +491,14 @@ If you use this codebase in your research, please cite as:
   author    = {Khan, Somiya},
   title     = {CardioSense: An AI-Powered Cardiovascular Risk Prediction System},
   year      = {2026},
-
-
+  url       = {https://github.com/somiyakhan01/CardioSense},
+  note      = {Software available at GitHub}
 }
 ```
 
 ---
 
-##  Acknowledgements
+## 🙏 Acknowledgements
 
 - **Dataset:** UCI Heart Disease Dataset — [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease)
 - **Original Study:** Detrano, R., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. *American Journal of Cardiology*.
@@ -342,7 +507,7 @@ If you use this codebase in your research, please cite as:
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 **This software is for research and educational purposes only. Not for clinical use without proper regulatory approval.**
 
@@ -351,8 +516,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 <div align="center">
 
 **Made with ❤️ by Somiya Khan**
-
-
 
 ⭐ If this project helped your research, please consider giving it a star on GitHub! ⭐
 
