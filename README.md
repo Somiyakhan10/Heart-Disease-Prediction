@@ -1,522 +1,351 @@
-# ❤️ CardioSense — AI-Powered Cardiovascular Risk Prediction System
+# 🫀 CardioSense — Cardiovascular Risk Prediction Dashboard
 
-**An Interpretable Machine Learning System for Heart Disease Risk Assessment with Multi-Model Comparison and Clinical Decision Support**
+> **AI-powered heart disease risk prediction · Production-ready Streamlit app · Portfolio-grade UI**
 
----
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-red?style=flat-square&logo=streamlit)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange?style=flat-square&logo=scikitlearn)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-<div align="center">
-
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-orange)
-![Flask](https://img.shields.io/badge/Flask-3.1-black)
-![React](https://img.shields.io/badge/React-19-61dafb)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8)
-![MIT License](https://img.shields.io/badge/License-MIT-green)
-
-</div>
+⚠️ **Medical Disclaimer**: This project is for educational and research purposes only. It is **not** a substitute for professional medical advice, diagnosis, or treatment.
 
 ---
 
-> ⚠️ **Medical Disclaimer:** CardioSense is developed strictly for research and educational purposes. It is NOT a certified medical device and must not be used as the sole basis for any clinical decision. All predictions should be reviewed and validated by a qualified healthcare professional.
+## Overview
+
+CardioSense demonstrates a complete machine learning engineering pipeline — from raw data exploration and model training through to a deployed, user-facing product. The system accepts **13 clinical measurements** and returns a real-time **Low / Moderate / High / Very High** cardiovascular risk prediction with a confidence score, personalized health recommendations, and interactive visualizations.
+
+The project was built to go beyond typical academic ML work: training a model is only the beginning. CardioSense wraps three trained classifiers inside a polished, production-grade **Streamlit** dashboard with custom CSS theming, animated Plotly charts, batch CSV inference, dark/light mode, and JSON report export.
 
 ---
 
-## 📌 Table of Contents
+## Model Performance
 
-- [Overview](#-overview)
-- [Screenshots](#-screenshots)
-- [System Architecture](#-system-architecture)
-- [Dataset](#-dataset)
-- [Models & Performance](#-models--performance)
-- [Feature Engineering](#-feature-engineering)
-- [Project Structure](#-project-structure)
-- [Installation & Setup](#-installation--setup)
-- [API Reference](#-api-reference)
-- [Technology Stack](#-technology-stack)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [Citation](#-citation)
-- [License](#-license)
-
----
-
-## 🔬 Overview
-
-**CardioSense** is a full-stack machine learning application designed to assist researchers and clinicians in assessing cardiovascular disease risk. The system integrates multiple ML algorithms — including **Random Forest**, **Gradient Boosting**, and **Logistic Regression** — with an intuitive clinical interface styled for healthcare professionals.
-
-### Key Features:
-
-| Feature | Description |
-|---------|-------------|
-| **Multi-Model Comparison** | Compare Random Forest, Gradient Boosting, and Logistic Regression side-by-side |
-| **Clinical Input Interface** | 14 patient parameters organised by clinical categories |
-| **Real-Time Risk Assessment** | Instant predictions with confidence scores |
-| **Batch Prediction** | Upload CSV files for bulk patient risk assessment |
-| **Interpretable Outputs** | Probability scores, risk categories, and feature importance |
-| **Responsive Design** | Works on desktops, tablets, and mobile devices |
-
----
-
-## 📸 Screenshots
-
-### Home Dashboard
-*Model comparison cards, quick stats, and clinical workflow overview*
-
-<img width="1887" height="886" alt="image" src="https://github.com/user-attachments/assets/82d21777-f973-4497-a78f-9b16546bf2d2" />
-
-### Batch Prediction
-*CSV upload interface for bulk patient risk assessment*
-
-<img width="1894" height="891" alt="image" src="https://github.com/user-attachments/assets/30e6fe5e-e438-41c7-ba56-960ae3d087f3" />
-
-
-### About Page
-*Methodology, dataset information, and model documentation*
-
-<img width="1884" height="802" alt="image" src="https://github.com/user-attachments/assets/877612e6-b472-4157-8163-82534cf124d0" />
-
-
----
-
-## 🏗️ System Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         CLIENT LAYER                            │
-│   React 19 + Tailwind CSS 4 + Recharts + Axios                  │
-│   ┌──────────┐  ┌──────────────┐  ┌──────────────┐  ┌────────┐ │
-│   │  Home    │  │   Predict    │  │    Batch     │  │ About  │ │
-│   │  Page    │  │    Page      │  │    Page      │  │ Page   │ │
-│   └──────────┘  └──────────────┘  └──────────────┘  └────────┘ │
-└─────────────────────────┬───────────────────────────────────────┘
-                          │ HTTP / REST (Axios)
-┌─────────────────────────▼───────────────────────────────────────┐
-│                        API LAYER                                │
-│   Flask 3.1 + Flask-CORS + Gunicorn                             │
-│   ┌──────────────────┐   ┌─────────────────┐   ┌─────────────┐ │
-│   │  GET /api/health │   │ POST /api/predict│   │POST /api/   │ │
-│   │                  │   │                  │   │batch-predict│ │
-│   └──────────────────┘   └─────────────────┘   └─────────────┘ │
-│   ┌──────────────────┐   ┌─────────────────┐                    │
-│   │ GET /api/models  │   │ GET /api/       │                    │
-│   │                  │   │features         │                    │
-│   └──────────────────┘   └─────────────────┘                    │
-└─────────────────────────┬───────────────────────────────────────┘
-                          │
-┌─────────────────────────▼───────────────────────────────────────┐
-│                      INFERENCE LAYER                            │
-│   scikit-learn + pandas + numpy + joblib                        │
-│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│   │   Random     │  │  Gradient    │  │  Logistic    │         │
-│   │   Forest     │  │   Boosting   │  │  Regression  │         │
-│   │   (83.6%)    │  │   (82.1%)    │  │   (81.4%)    │         │
-│   └──────────────┘  └──────────────┘  └──────────────┘         │
-│                                                                 │
-│   ┌──────────────────────────────────────────────────────────┐  │
-│   │              StandardScaler + Feature Pipeline           │  │
-│   └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Data Flow for Single Prediction:
-
-1. User enters patient parameters via React form
-2. Axios POSTs JSON data to `/api/predict`
-3. Flask validates input and scales features
-4. All three models generate predictions
-5. Results are returned as JSON with probabilities
-6. React renders risk gauge, confidence bars, and recommendations
-
----
-
-## 📊 Dataset
-
-| Property | Details |
-|----------|---------|
-| **Name** | UCI Heart Disease Dataset |
-| **Original Source** | UCI Machine Learning Repository |
+| Metric | Value |
+|--------|-------|
+| **Best Algorithm** | Gradient Boosting Classifier |
+| **Dataset** | UCI Heart Disease Dataset (Cleveland Clinic) |
 | **Total Samples** | 303 patient records |
-| **Features** | 14 clinical parameters |
-| **Target** | Presence of heart disease (0 = No, 1 = Yes) |
-| **Class Distribution** | 138 No Disease / 165 Disease |
+| **Train / Test Split** | 80% / 20% with stratification |
+| **Feature Scaling** | StandardScaler (z-score normalisation) |
+| **Test Accuracy** | ~82% |
+| **ROC-AUC Score** | ~0.90 |
+| **Cross-Validation Mean** | ~0.89 ± 0.03 (5-fold) |
+| **Class Distribution** | 165 Disease / 138 No Disease |
 
-### Feature Descriptions:
+Three models are trained at startup and **the best by AUC is auto-selected**:
 
-| Feature | Description | Type |
-|---------|-------------|------|
-| **age** | Age in years | Continuous |
-| **sex** | 1 = male, 0 = female | Binary |
-| **cp** | Chest pain type (0-3) | Categorical |
-| **trestbps** | Resting blood pressure (mm Hg) | Continuous |
-| **chol** | Serum cholesterol (mg/dl) | Continuous |
-| **fbs** | Fasting blood sugar > 120 mg/dl (1 = true) | Binary |
-| **restecg** | Resting ECG results (0-2) | Categorical |
-| **thalach** | Maximum heart rate achieved | Continuous |
-| **exang** | Exercise induced angina (1 = yes) | Binary |
-| **oldpeak** | ST depression induced by exercise | Continuous |
-| **slope** | Slope of peak exercise ST segment | Categorical |
-| **ca** | Number of major vessels (0-3) | Categorical |
-| **thal** | Thalassemia (0-2) | Categorical |
-| **target** | Diagnosis (0 = no disease, 1 = disease) | Target |
+| Model | Typical Accuracy | Typical AUC |
+|-------|-----------------|-------------|
+| Gradient Boosting | ~82% | ~0.90 |
+| Random Forest | ~80% | ~0.88 |
+| Logistic Regression | ~78% | ~0.85 |
 
 ---
 
-## 🤖 Models & Performance
-
-### Model Comparison
-
-| Model | Accuracy | ROC-AUC | Cross-Validation (5-fold) | Best Parameters |
-|-------|----------|---------|---------------------------|-----------------|
-| **Random Forest** | **83.6%** | **0.916** | 81.2% ± 3.4% | n_estimators=100, max_depth=10 |
-| Gradient Boosting | 82.1% | 0.908 | 80.5% ± 2.8% | learning_rate=0.1, n_estimators=100 |
-| Logistic Regression | 81.4% | 0.895 | 79.8% ± 3.1% | C=1.0, penalty=l2 |
-
-### Feature Importance (Random Forest)
+## UI Overview
 
 ```
-1. thalach (Max Heart Rate)     ████████████████░░░░  18.2%
-2. cp (Chest Pain Type)         ██████████████░░░░░░  16.5%
-3. ca (Major Vessels)           ████████████░░░░░░░░  13.8%
-4. oldpeak (ST Depression)      ████████████░░░░░░░░  12.9%
-5. age                          ████████░░░░░░░░░░░░   8.5%
-6. thal                         ████████░░░░░░░░░░░░   8.1%
-7. exang                        ██████░░░░░░░░░░░░░░   6.2%
-8. chol                         ████░░░░░░░░░░░░░░░░   4.5%
-9. trestbps                     ███░░░░░░░░░░░░░░░░░   3.2%
-10. sex                         ██░░░░░░░░░░░░░░░░░░   2.1%
+┌─────────────────────────────────────────────────────────────┐
+│  ⚙️ Sidebar          │  🫀 CardioSense Hero Banner           │
+│  ─────────────────   │  ─────────────────────────────────── │
+│  Dark/Light Toggle   │  [ Full Assessment ] [ Quick Screen ] │
+│  Model Selector      │  [ Batch Predict  ] [ About        ] │
+│  Model Metrics       │                                       │
+│  Demo Patients       │  ┌──────────────┐ ┌───────────────┐  │
+│  Upload Dataset      │  │ Input Form   │ │ Risk Gauge    │  │
+│                      │  │ (13 sliders/ │ │ Radar Chart   │  │
+│  v1.0 · scikit-learn │  │  dropdowns)  │ │ Comparisons   │  │
+│                      │  │              │ │ Recs / Export │  │
+│                      │  └──────────────┘ └───────────────┘  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔧 Feature Engineering
+## How It Works
 
-### Input Features (14 Parameters)
+The system follows a straightforward inference pipeline. A user fills in 13 clinical parameters through the Streamlit form, which passes the feature vector through the saved **StandardScaler**, runs inference on the selected classifier, and returns the risk score with a full visual breakdown in real time.
 
-| Category | Features |
-|----------|----------|
-| **Demographic** | Age, Sex |
-| **Vitals** | Resting BP (trestbps), Max Heart Rate (thalach) |
-| **Lab Results** | Cholesterol (chol), Fasting Blood Sugar (fbs) |
-| **Cardiac Markers** | Chest Pain Type (cp), Exercise Angina (exang), ST Depression (oldpeak), ST Slope (slope) |
-| **Clinical Findings** | Resting ECG (restecg), Major Vessels (ca), Thalassemia (thal) |
-
-### Preprocessing Pipeline
-
-```python
-# Feature scaling (StandardScaler)
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Train-test split (stratified)
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42, stratify=y
-)
-
-# Cross-validation (5-fold)
-cv_scores = cross_val_score(model, X_scaled, y, cv=5)
+```
+User Input (13 features)
+        ↓
+StandardScaler transform
+        ↓
+Gradient Boosting / Random Forest / Logistic Regression
+        ↓
+{ risk_probability, risk_level, recommendations, charts }
 ```
 
 ---
 
-## 📁 Project Structure
+## Features
+
+### 4 Prediction Modes
+| Mode | Parameters Used | Best For |
+|------|----------------|----------|
+| Full Assessment | All 13 features | Accurate screening |
+| Quick Screen | Age, Cholesterol, Max HR | Fast preliminary check |
+| Batch Predict | CSV upload | Multiple patients at once |
+| Demo Patients | 3 preset cases | Testing & demonstrations |
+
+### Visualizations
+- **Risk Gauge** — Animated circular indicator (0–100%)
+- **Radar Chart** — Patient profile vs normal range comparison
+- **Feature Importance** — Which factors drive the prediction most
+- **Correlation Heatmap** — Full 14×14 feature relationship matrix
+- **Risk History** — Session-level trend line after multiple predictions
+
+### Risk Levels
+| Score | Level | Indicator |
+|-------|-------|-----------|
+| 0–19% | LOW RISK | 🟢 Green |
+| 20–39% | MODERATE RISK | 🟡 Yellow |
+| 40–69% | HIGH RISK | 🟠 Orange |
+| 70–100% | VERY HIGH RISK | 🔴 Red |
+
+### Additional Features
+- 🌙 Dark / Light mode toggle
+- 📋 Personalized health recommendations per patient profile
+- 📊 Parameter vs normal range comparison bars with ±% deltas
+- 📝 Doctor's Notes section
+- ⬇️ JSON report export
+- 📂 Custom dataset upload (replace training data on the fly)
+
+---
+
+## Feature Engineering
+
+The 13 clinical input features used by the model:
+
+| Feature | Description | Normal Range |
+|---------|-------------|--------------|
+| `age` | Patient age in years | 30–65 |
+| `sex` | Biological sex (0 = Female, 1 = Male) | — |
+| `cp` | Chest pain type (0–3) | — |
+| `trestbps` | Resting blood pressure | < 120 mmHg |
+| `chol` | Serum cholesterol | < 200 mg/dL |
+| `fbs` | Fasting blood sugar > 120 mg/dL | 0 (Normal) |
+| `restecg` | Resting ECG results (0–2) | 0 (Normal) |
+| `thalach` | Maximum heart rate achieved | 60–150 bpm |
+| `exang` | Exercise-induced angina | 0 (No) |
+| `oldpeak` | ST depression induced by exercise | 0–1.5 mm |
+| `slope` | Slope of peak exercise ST segment | — |
+| `ca` | Major vessels coloured by fluoroscopy (0–3) | 0 |
+| `thal` | Thalassemia type | 2 (Normal) |
+
+---
+
+## Tech Stack
+
+- **Machine Learning**: Python, scikit-learn, pandas, NumPy, Gradient Boosting, Random Forest, Logistic Regression, StandardScaler
+- **Frontend & Dashboard**: Streamlit 1.32+, Custom CSS, Plotly
+- **Visualizations**: Plotly Graph Objects (gauge, radar, heatmap, bar, line)
+- **Infrastructure**: Streamlit Community Cloud / Render / Heroku / Docker
+
+---
+
+## Project Structure
 
 ```
-CardioSense/
-│
-├── 📓 notebooks/
-│   └── Somiya_Khan_Heart_Disease_Analysis.ipynb   # Full EDA + model training
-│
-├── ⚙️ backend/
-│   ├── app.py                           # Flask application
-│   ├── requirements.txt                 # Python dependencies
-│   ├── Dockerfile                       # Container definition
-│   ├── models/
-│   │   ├── random_forest.pkl
-│   │   ├── gradient_boosting.pkl
-│   │   ├── logistic_regression.pkl
-│   │   └── scaler.pkl
-│   ├── routes/
-│   │   ├── predict.py                   # Single prediction endpoint
-│   │   ├── batch_predict.py             # Batch CSV prediction
-│   │   └── health.py                    # Health check endpoint
-│   └── utils/
-│       ├── preprocessing.py             # Feature scaling & validation
-│       └── feature_definitions.py       # Feature names & descriptions
-│
-├── 🖥️ frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── HomePage.jsx             # Dashboard with model stats
-│   │   │   ├── PredictPage.jsx          # Single patient prediction
-│   │   │   ├── BatchPage.jsx            # CSV batch prediction
-│   │   │   └── AboutPage.jsx            # Methodology & documentation
-│   │   ├── components/
-│   │   │   ├── RiskGauge.jsx            # Animated probability gauge
-│   │   │   ├── FeatureInput.jsx         # Individual input with tooltip
-│   │   │   ├── ModelCard.jsx            # Model performance card
-│   │   │   ├── ResultPanel.jsx          # Prediction results display
-│   │   │   └── FeatureImportance.jsx    # Bar chart visualization
-│   │   ├── services/
-│   │   │   └── api.js                   # Axios API client
-│   │   └── index.css                    # Tailwind + custom styles
-│   ├── package.json
-│   └── vite.config.js
-│
-├── .gitignore
-├── LICENSE
+cardiosense/
+├── app.py               ← Main Streamlit application (all-in-one, 1100+ lines)
+├── heart.csv            ← UCI Heart Disease dataset (303 patients)
+├── requirements.txt     ← Python dependencies
+├── .streamlit/
+│   └── config.toml      ← Dark theme & server configuration
 └── README.md
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## 🚀 Quick Start (Local)
 
 ### Prerequisites
+- Python 3.10+
+- pip
 
-| Tool | Version |
-|------|---------|
-| Python | ≥ 3.10 |
-| Node.js | ≥ 18.0 |
-| npm | ≥ 9.0 |
-| Git | latest |
-
-### 1. Clone the Repository
-
+### 1. Clone / download
 ```bash
-git clone https://github.com/somiyakhan01/CardioSense.git
-cd CardioSense
+git clone https://github.com/somiyakhan/cardiosense.git
+cd cardiosense
 ```
 
-### 2. Backend Setup
-
+### 2. Create virtual environment
 ```bash
-cd backend
-
-# Create and activate virtual environment
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS / Linux
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Train models (if needed)
-python train_models.py
-
-# Start the Flask server
-python app.py
-# → Running on http://127.0.0.1:5000
+source venv/bin/activate        # Windows: venv\Scripts\activate
 ```
 
-### 3. Frontend Setup
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run the app
+```bash
+streamlit run app.py
+```
+
+The app opens automatically at **http://localhost:8501**
+
+> ℹ️ `heart.csv` must be in the same directory as `app.py`. If it's missing, the app will prompt you to upload it directly in the browser.
+
+---
+
+## ☁️ Deployment Guide
+
+### Option A — Streamlit Community Cloud (Free, Recommended)
+
+1. Push your project to a **public GitHub repo** (include `heart.csv`).
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**.
+3. Connect your GitHub repo and set:
+   - **Branch**: `main`
+   - **Main file**: `app.py`
+4. Click **Deploy** — live in ~2 minutes.
+
+---
+
+### Option B — Render (Free Tier)
+
+1. Push to GitHub.
+2. Go to [render.com](https://render.com) → **New Web Service**.
+3. Connect your repo and set:
+   - **Build command**: `pip install -r requirements.txt`
+   - **Start command**: `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`
+4. Click **Create Web Service**.
+
+---
+
+### Option C — Heroku
+
+Create a `Procfile`:
+```
+web: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+```
+
+Then:
+```bash
+heroku create your-cardiosense-app
+git push heroku main
+heroku open
+```
+
+---
+
+### Option D — Docker
+
+Create a `Dockerfile`:
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY . .
+RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 8501
+CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
+```
 
 ```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the Vite dev server
-npm run dev
-# → Running on http://localhost:5173
-```
-
-### 4. Training Notebook (Optional)
-
-Upload `Somiya_Khan_Heart_Disease_Analysis.ipynb` to:
-- **Kaggle** (with GPU enabled)
-- **Google Colab**
-- **Local Jupyter**
-
-Run all cells to regenerate model files.
-
----
-
-## 📡 API Reference
-
-**Base URL (local):** `http://127.0.0.1:5000`
-
-### GET `/api/health`
-
-Returns API status and available models.
-
-**Response 200:**
-```json
-{
-  "status": "healthy",
-  "models": ["random_forest", "gradient_boosting", "logistic_regression"],
-  "features": 13
-}
-```
-
-### POST `/api/predict`
-
-Accepts patient parameters and returns predictions from all three models.
-
-**Request Body:**
-```json
-{
-  "features": {
-    "age": 52,
-    "sex": 1,
-    "cp": 0,
-    "trestbps": 125,
-    "chol": 212,
-    "fbs": 0,
-    "restecg": 1,
-    "thalach": 168,
-    "exang": 0,
-    "oldpeak": 1.0,
-    "slope": 2,
-    "ca": 2,
-    "thal": 3
-  }
-}
-```
-
-**Response 200:**
-```json
-{
-  "success": true,
-  "predictions": {
-    "random_forest": {
-      "prediction": 1,
-      "label": "Disease Present",
-      "confidence": 83.6,
-      "probability": 0.836
-    },
-    "gradient_boosting": {
-      "prediction": 1,
-      "label": "Disease Present",
-      "confidence": 78.2,
-      "probability": 0.782
-    },
-    "logistic_regression": {
-      "prediction": 0,
-      "label": "No Disease",
-      "confidence": 65.4,
-      "probability": 0.346
-    }
-  },
-  "ensemble_consensus": "2 out of 3 models predict Disease Present"
-}
-```
-
-### POST `/api/batch-predict`
-
-Upload CSV file for bulk predictions.
-
-**Request:** `multipart/form-data` with field `file`
-
-**Response 200:**
-```json
-{
-  "success": true,
-  "total_patients": 50,
-  "results": [
-    {
-      "patient_id": 1,
-      "random_forest": "Disease Present",
-      "gradient_boosting": "Disease Present",
-      "logistic_regression": "No Disease",
-      "consensus": "2/3"
-    }
-  ]
-}
+docker build -t cardiosense .
+docker run -p 8501:8501 cardiosense
 ```
 
 ---
 
-## 🛠️ Technology Stack
+## 🎨 Customization
 
-| Layer | Technology | Version | Purpose |
-|-------|------------|---------|---------|
-| **Model** | scikit-learn | 1.6.1 | ML algorithms (RF, GB, LR) |
-| **Model** | pandas | 2.2.2 | Data manipulation |
-| **Model** | numpy | 2.0.2 | Numerical operations |
-| **Backend** | Flask | 3.1.0 | REST API server |
-| **Backend** | Flask-CORS | 4.0.1 | Cross-origin resource sharing |
-| **Backend** | Gunicorn | 22.0.0 | Production WSGI server |
-| **Frontend** | React | 19.0 | UI framework |
-| **Frontend** | Tailwind CSS | 4.0 | Utility-first styling |
-| **Frontend** | Recharts | latest | Charts & visualizations |
-| **Frontend** | Axios | latest | HTTP client |
-| **Deployment** | Docker | latest | Containerization |
-| **Deployment** | Hugging Face Spaces | — | Backend hosting |
-| **Deployment** | Vercel | — | Frontend hosting |
-| **Training** | Jupyter | latest | EDA & model development |
+### Change Color Theme
+Edit `inject_css()` in `app.py`:
+```python
+accent  = "#your_color"   # Primary accent (default: red #f85149)
+accent2 = "#your_color"   # Secondary accent (default: blue #388bfd)
+```
 
----
+### Add a New Feature
+1. Add a new key to the `FEATURE_META` dict.
+2. Add the corresponding input widget in `render_input_form()`.
+3. `train_models()` picks up new columns automatically on restart.
 
-## 🗺️ Roadmap
+### Change Model Hyperparameters
+Find the `configs` dict in `train_models()`:
+```python
+"Gradient Boosting": GradientBoostingClassifier(
+    n_estimators=300,    # More trees = higher accuracy
+    learning_rate=0.05,  # Lower = more conservative
+    max_depth=5,
+)
+```
 
-- [x] **Phase 1** — Data collection, EDA, feature engineering
-- [x] **Phase 2** — Model training (Random Forest, Gradient Boosting, Logistic Regression)
-- [x] **Phase 3** — Cross-validation and hyperparameter tuning
-- [x] **Phase 4** — Flask REST API development
-- [x] **Phase 5** — React dashboard with Tailwind CSS
-- [x] **Phase 6** — Batch prediction for CSV uploads
-- [x] **Phase 7** — Docker deployment on Hugging Face Spaces
-- [ ] **Phase 8** — SHAP/LIME explainability integration
-- [ ] **Phase 9** — XGBoost and Neural Network model addition
-- [ ] **Phase 10** — Mobile app (React Native) development
-- [ ] **Phase 11** — FHIR/HL7 integration for EHR systems
-
----
-
-## 🤝 Contributing
-
-Contributions from researchers, developers, and clinicians are welcome!
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit changes: `git commit -m "Add feature"`
-4. Push to branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
-For major changes, please open an Issue first to discuss.
-
----
-
-## 📖 Citation
-
-If you use this codebase in your research, please cite as:
-
-```bibtex
-@software{khan2026cardiosense,
-  author    = {Khan, Somiya},
-  title     = {CardioSense: An AI-Powered Cardiovascular Risk Prediction System},
-  year      = {2026},
-  url       = {https://github.com/somiyakhan01/CardioSense},
-  note      = {Software available at GitHub}
-}
+### Add a Recommendation Rule
+In `build_recommendations()`:
+```python
+if patient['your_feature'] > threshold:
+    recs.append({"icon": "🔔", "text": "Your custom recommendation."})
 ```
 
 ---
 
-## 🙏 Acknowledgements
+## Dataset
 
-- **Dataset:** UCI Heart Disease Dataset — [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease)
-- **Original Study:** Detrano, R., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. *American Journal of Cardiology*.
+**Source**: [UCI Machine Learning Repository — Heart Disease Dataset](https://archive.ics.uci.edu/dataset/45/heart+disease)
+
+- **Patients**: 303 (Cleveland Clinic Foundation)
+- **Features**: 13 clinical attributes
+- **Target**: Binary — 0 = No Disease, 1 = Disease
+- **Class balance**: ~54% Disease, ~46% No Disease
+- **Missing values**: None
+
+The dataset was collected at the Cleveland Clinic Foundation and has been a benchmark classification dataset since the early 1990s.
 
 ---
 
-## 📄 License
+## Future Work
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-**This software is for research and educational purposes only. Not for clinical use without proper regulatory approval.**
+Several natural extensions exist for researchers and students who want to build on this project. Integrating **SHAP values** for per-prediction explainability would make the model's reasoning transparent to clinicians. Adding a **time-series risk tracker** that stores patient history across sessions would enable longitudinal monitoring. Replacing static thresholds in the recommendation engine with a **rule-based clinical decision support system** aligned to ACC/AHA guidelines would bring the tool closer to real clinical utility. Training on the full **multi-site UCI Heart Disease dataset** (Cleveland + Hungarian + Switzerland + VA Long Beach) with 920 combined records would likely improve model generalization.
 
 ---
 
-<div align="center">
+## Portfolio Notes
 
-**Made with ❤️ by Somiya Khan**
+This project demonstrates:
+- ✅ End-to-end ML pipeline (data → train → evaluate → deploy)
+- ✅ Production-grade Streamlit UI with fully custom CSS theming
+- ✅ Multiple model training, comparison, and auto-selection by AUC
+- ✅ Interactive Plotly visualizations (gauge, radar, heatmap, bar, line)
+- ✅ Batch inference via CSV upload with downloadable results
+- ✅ Session state management and risk history tracking
+- ✅ Dark / light mode toggle
+- ✅ JSON report export per prediction
+- ✅ Modular, well-commented, production-ready code (1100+ lines)
 
-⭐ If this project helped your research, please consider giving it a star on GitHub! ⭐
+---
 
-</div>
+## ⚠️ Medical Disclaimer
+
+CardioSense is an **educational and portfolio tool only**.
+
+- It is **NOT** a substitute for professional medical advice
+- Predictions are based on a small (303-patient) dataset
+- **Do not use for clinical decision-making**
+- Always consult a qualified healthcare provider for medical decisions
+
+---
+
+## Author
+
+**Somiya Khan**
+
+[![GitHub](https://img.shields.io/badge/GitHub-somiyakhan-181717?style=flat-square&logo=github)](https://github.com/somiyakhan)
+[![Kaggle](https://img.shields.io/badge/Kaggle-somiyakhan-20BEFF?style=flat-square&logo=kaggle)](https://www.kaggle.com/somiyakhan)
+
+---
+
+## License
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+
+---
+
+*CardioSense v1.0 · Built with ❤️ for learning and research · Dataset: UCI Heart Disease Repository*
+
+*If this project helped you, consider giving it a ⭐ on GitHub*
