@@ -1,21 +1,21 @@
-# ❤️ CardioSense — AI-Powered Cardiovascular Risk Prediction System
+#  CardioSense — AI-Powered Cardiovascular Risk Prediction System
 
 **An Interpretable Machine Learning System for Heart Disease Risk Assessment with Multi-Model Comparison and Clinical Decision Support**
 
 ---
 
 
-<div align="center"> <a href="https://huggingface.co/spaces/somiya-khan01/heart_disease_risk_prediction" target="_blank"> <button style=" background: linear-gradient(135deg, #FFD21E, #FFA500); border: none; color: #000; font-size: 24px; font-weight: bold; padding: 16px 48px; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 210, 30, 0.4); transition: all 0.3s ease; text-decoration: none; "> 🎯 Try CardioSense Now </button> </a> <br><br> <p><em>Click the button above to test the model with your own inputs!</em></p> </div>
+<div align="center"> <a href="https://huggingface.co/spaces/somiya-khan01/heart_disease_risk_prediction" target="_blank"> <button style=" background: linear-gradient(135deg, #FFD21E, #FFA500); border: none; color: #000; font-size: 24px; font-weight: bold; padding: 16px 48px; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(255, 210, 30, 0.4); transition: all 0.3s ease; text-decoration: none; "> 🎯 Live Demo </button> </a> <br><br> <p><em>Click the button above to test the model with your own inputs!</em></p> </div>
 
 
 </div>
 
 ---
 
-> ⚠️ **Medical Disclaimer:** CardioSense is developed strictly for research and educational purposes. It is NOT a certified medical device and must not be used as the sole basis for any clinical decision. All predictions should be reviewed and validated by a qualified healthcare professional.
+>  **Medical Disclaimer:** CardioSense is developed strictly for research and educational purposes. It is NOT a certified medical device and must not be used as the sole basis for any clinical decision. All predictions should be reviewed and validated by a qualified healthcare professional.
 
 
-## 🔬 Overview
+##  Overview
 
 **CardioSense** is a full-stack machine learning application designed to assist researchers and clinicians in assessing cardiovascular disease risk. The system integrates multiple ML algorithms — including **Random Forest**, **Gradient Boosting**, and **Logistic Regression** — with an intuitive clinical interface styled for healthcare professionals.
 
@@ -32,7 +32,7 @@
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 ### Home Dashboard
 *Model comparison cards, quick stats, and clinical workflow overview*
@@ -53,7 +53,7 @@
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -104,7 +104,7 @@
 
 ---
 
-## 📊 Dataset
+##  Dataset
 
 | Property | Details |
 |----------|---------|
@@ -136,7 +136,7 @@
 
 ---
 
-## 🤖 Models & Performance
+##  Models & Performance
 
 ### Model Comparison
 
@@ -163,7 +163,7 @@
 
 ---
 
-## 🔧 Feature Engineering
+##  Feature Engineering
 
 ### Input Features (14 Parameters)
 
@@ -175,238 +175,11 @@
 | **Cardiac Markers** | Chest Pain Type (cp), Exercise Angina (exang), ST Depression (oldpeak), ST Slope (slope) |
 | **Clinical Findings** | Resting ECG (restecg), Major Vessels (ca), Thalassemia (thal) |
 
-### Preprocessing Pipeline
 
-```python
-# Feature scaling (StandardScaler)
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Train-test split (stratified)
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42, stratify=y
-)
-
-# Cross-validation (5-fold)
-cv_scores = cross_val_score(model, X_scaled, y, cv=5)
-```
 
 ---
 
-## 📁 Project Structure
-
-```
-CardioSense/
-│
-├── 📓 notebooks/
-│   └── Somiya_Khan_Heart_Disease_Analysis.ipynb   # Full EDA + model training
-│
-├── ⚙️ backend/
-│   ├── app.py                           # Flask application
-│   ├── requirements.txt                 # Python dependencies
-│   ├── Dockerfile                       # Container definition
-│   ├── models/
-│   │   ├── random_forest.pkl
-│   │   ├── gradient_boosting.pkl
-│   │   ├── logistic_regression.pkl
-│   │   └── scaler.pkl
-│   ├── routes/
-│   │   ├── predict.py                   # Single prediction endpoint
-│   │   ├── batch_predict.py             # Batch CSV prediction
-│   │   └── health.py                    # Health check endpoint
-│   └── utils/
-│       ├── preprocessing.py             # Feature scaling & validation
-│       └── feature_definitions.py       # Feature names & descriptions
-│
-├── 🖥️ frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── HomePage.jsx             # Dashboard with model stats
-│   │   │   ├── PredictPage.jsx          # Single patient prediction
-│   │   │   ├── BatchPage.jsx            # CSV batch prediction
-│   │   │   └── AboutPage.jsx            # Methodology & documentation
-│   │   ├── components/
-│   │   │   ├── RiskGauge.jsx            # Animated probability gauge
-│   │   │   ├── FeatureInput.jsx         # Individual input with tooltip
-│   │   │   ├── ModelCard.jsx            # Model performance card
-│   │   │   ├── ResultPanel.jsx          # Prediction results display
-│   │   │   └── FeatureImportance.jsx    # Bar chart visualization
-│   │   ├── services/
-│   │   │   └── api.js                   # Axios API client
-│   │   └── index.css                    # Tailwind + custom styles
-│   ├── package.json
-│   └── vite.config.js
-│
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
----
-
-## ⚙️ Installation & Setup
-
-### Prerequisites
-
-| Tool | Version |
-|------|---------|
-| Python | ≥ 3.10 |
-| Node.js | ≥ 18.0 |
-| npm | ≥ 9.0 |
-| Git | latest |
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/somiyakhan01/CardioSense.git
-cd CardioSense
-```
-
-### 2. Backend Setup
-
-```bash
-cd backend
-
-# Create and activate virtual environment
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS / Linux
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Train models (if needed)
-python train_models.py
-
-# Start the Flask server
-python app.py
-# → Running on http://127.0.0.1:5000
-```
-
-### 3. Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the Vite dev server
-npm run dev
-# → Running on http://localhost:5173
-```
-
-### 4. Training Notebook (Optional)
-
-Upload `Somiya_Khan_Heart_Disease_Analysis.ipynb` to:
-- **Kaggle** (with GPU enabled)
-- **Google Colab**
-- **Local Jupyter**
-
-Run all cells to regenerate model files.
-
----
-
-## 📡 API Reference
-
-**Base URL (local):** `http://127.0.0.1:5000`
-
-### GET `/api/health`
-
-Returns API status and available models.
-
-**Response 200:**
-```json
-{
-  "status": "healthy",
-  "models": ["random_forest", "gradient_boosting", "logistic_regression"],
-  "features": 13
-}
-```
-
-### POST `/api/predict`
-
-Accepts patient parameters and returns predictions from all three models.
-
-**Request Body:**
-```json
-{
-  "features": {
-    "age": 52,
-    "sex": 1,
-    "cp": 0,
-    "trestbps": 125,
-    "chol": 212,
-    "fbs": 0,
-    "restecg": 1,
-    "thalach": 168,
-    "exang": 0,
-    "oldpeak": 1.0,
-    "slope": 2,
-    "ca": 2,
-    "thal": 3
-  }
-}
-```
-
-**Response 200:**
-```json
-{
-  "success": true,
-  "predictions": {
-    "random_forest": {
-      "prediction": 1,
-      "label": "Disease Present",
-      "confidence": 83.6,
-      "probability": 0.836
-    },
-    "gradient_boosting": {
-      "prediction": 1,
-      "label": "Disease Present",
-      "confidence": 78.2,
-      "probability": 0.782
-    },
-    "logistic_regression": {
-      "prediction": 0,
-      "label": "No Disease",
-      "confidence": 65.4,
-      "probability": 0.346
-    }
-  },
-  "ensemble_consensus": "2 out of 3 models predict Disease Present"
-}
-```
-
-### POST `/api/batch-predict`
-
-Upload CSV file for bulk predictions.
-
-**Request:** `multipart/form-data` with field `file`
-
-**Response 200:**
-```json
-{
-  "success": true,
-  "total_patients": 50,
-  "results": [
-    {
-      "patient_id": 1,
-      "random_forest": "Disease Present",
-      "gradient_boosting": "Disease Present",
-      "logistic_regression": "No Disease",
-      "consensus": "2/3"
-    }
-  ]
-}
-```
-
----
-
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technology | Version | Purpose |
 |-------|------------|---------|---------|
@@ -427,7 +200,7 @@ Upload CSV file for bulk predictions.
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [x] **Phase 1** — Data collection, EDA, feature engineering
 - [x] **Phase 2** — Model training (Random Forest, Gradient Boosting, Logistic Regression)
@@ -443,7 +216,7 @@ Upload CSV file for bulk predictions.
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions from researchers, developers, and clinicians are welcome!
 
@@ -457,30 +230,19 @@ For major changes, please open an Issue first to discuss.
 
 ---
 
-## 📖 Citation
 
-If you use this codebase in your research, please cite as:
 
-```bibtex
-@software{khan2026cardiosense,
-  author    = {Khan, Somiya},
-  title     = {CardioSense: An AI-Powered Cardiovascular Risk Prediction System},
-  year      = {2026},
-  url       = {https://github.com/somiyakhan01/CardioSense},
-  note      = {Software available at GitHub}
-}
-```
 
 ---
 
-## 🙏 Acknowledgements
+##  Acknowledgements
 
 - **Dataset:** UCI Heart Disease Dataset — [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Heart+Disease)
 - **Original Study:** Detrano, R., et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. *American Journal of Cardiology*.
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
@@ -492,6 +254,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 **Made with ❤️ by Somiya Khan**
 
-⭐ If this project helped your research, please consider giving it a star on GitHub! ⭐
+ If this project helped your research, please consider giving it a star on GitHub! 
 
 </div>
